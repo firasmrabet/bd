@@ -1,0 +1,25 @@
+﻿**********************
+Début de la transcription Windows PowerShell
+Heure de début : 20250821221756
+Nom d'utilisateur : LAPTOP-R57978V1\21629
+Utilisateur runAs :  LAPTOP-R57978V1\21629
+Nom de la configuration : 
+Ordinateur : LAPTOP-R57978V1 (Microsoft Windows NT 10.0.26100.0)
+Application hôte : C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -noexit -command try { . "c:\Users\21629\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+ID de processus : 33032
+PSVersion: 5.1.26100.3624
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.3624
+BuildVersion: 10.0.26100.3624
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcription démarrée, le fichier de sortie est .\npm-install-transcript.txt
+
+
+**********************
+Fin de la transcription Windows PowerShell
+Heure de fin : 20250821221804
+**********************

@@ -38,6 +38,14 @@ export default function QuoteModal() {
     console.warn('VITE_API_KEY is not set. /send-quote requests will be rejected with 401.');
   }
 
+  // Backend URL: prefer an explicit VITE_BACKEND_URL (for local testing or external API),
+  // otherwise use a relative path so the deployed frontend talks to the same origin
+  // (Vercel routes /send-quote to the serverless function in `vercel.json`).
+  const backendBase = ((import.meta.env as any).VITE_BACKEND_URL || '').trim();
+  const sendQuoteUrl = backendBase
+    ? `${backendBase.replace(/\/$/, '')}/send-quote`
+    : '/send-quote';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!state || !state.userId) {
@@ -49,8 +57,8 @@ export default function QuoteModal() {
       products,
       message: formData.message || `Bonjour, je souhaite recevoir un devis pour les produits sélectionnés. Merci de me contacter avec vos meilleures conditions.`
     };
-    // Send JSON to backend (no PDF)
-    fetch('http://localhost:5000/send-quote', {
+  // Send JSON to backend (no PDF)
+  fetch(sendQuoteUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
