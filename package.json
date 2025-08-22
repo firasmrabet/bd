@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   },
   "scripts": {
+    "postinstall": "npm rebuild && npm run clean-modules || true",
+    "clean-modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "dev": "vite",
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
     "build": "tsc --skipLibCheck && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -31,7 +33,7 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
     "pdfkit": "^0.17.1",
-    "puppeteer-core": "^10.1.0",
+    "puppeteer": "^21.11.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",

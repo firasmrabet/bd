@@ -4,16 +4,24 @@ import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import ejs from 'ejs';
-let puppeteer;
-try {
-    // prefer normal import; fallback to CJS path if ESM resolution fails in some environments
-    puppeteer = await import('puppeteer');
-    puppeteer = puppeteer.default || puppeteer;
-} catch (e) {
-    // fallback to cjs path suggested by Node error message
-    puppeteer = await import('puppeteer/lib/cjs/puppeteer/puppeteer.js');
-    puppeteer = puppeteer.default || puppeteer;
-}
+import puppeteer from 'puppeteer';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+
+// Configure Puppeteer for Render.com environment
+const isProd = process.env.NODE_ENV === 'production';
+const puppeteerConfig = {
+    args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--window-size=1920x1080'
+    ],
+    headless: 'new',
+    executablePath: isProd ? '/usr/bin/chromium' : undefined
+};
 import path from 'path';
 import { promises as fs } from 'fs';
 import crypto from 'crypto';
@@ -357,7 +365,7 @@ app.post('/send-quote', async (req, res) => {
     console.log('templatePath:', templatePath);
     let pdfBuffer;
     try {
-        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        const browser = await puppeteer.launch(puppeteerConfig);
         const page = await browser.newPage();
         await page.setContent(pdfHtml, { waitUntil: 'networkidle0' });
         pdfBuffer = await page.pdf({ format: 'A4', margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' } });
@@ -632,6 +640,22 @@ app.get('/download-devis/:name', async (req, res) => {
     } catch (e) {
         console.error('Error serving PDF', e);
         return res.status(500).send('Internal error');
+    }
+});
+
+// Health check endpoint
+app.get('/health', async (req, res) => {
+    try {
+        const execAsync = promisify(exec);
+        const { stdout } = await execAsync('chromium --version');
+        res.json({
+            status: 'healthy',
+            chrome: stdout.trim(),
+            node: process.version,
+            env: process.env.NODE_ENV
+        });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
     }
 });
 
